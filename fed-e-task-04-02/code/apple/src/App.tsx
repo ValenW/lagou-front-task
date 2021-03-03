@@ -1,10 +1,10 @@
-import React from 'react';
 import './style/App.css';
+import AppleBasket from './component/AppleBasket'
 
 function App() {
   return (
     <div className="App">
-      app
+      <AppleBasket/>
     </div>
   );
 }
