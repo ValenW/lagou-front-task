@@ -9,7 +9,6 @@ import {
   css,
   Flex,
 } from "@chakra-ui/core";
-
 import SignUp from "./SignUp";
 import SignIn from "./SignIn";
 
@@ -39,26 +38,26 @@ export default function Form() {
             <Tab
               fontSize={20}
               _selected={selectedTabStyle}
-              _focus={{ boxShadow: "none" }}
-              _hover={hoverTabStyle}>
-              注册
-            </Tab>
-            <Box fontSize="lg" mx={5}>·</Box>
-            <Tab
-              fontSize={20}
-              _selected={selectedTabStyle}
-              _focus={{ boxShadow: "none" }}
               _hover={hoverTabStyle}>
               登录
             </Tab>
+            <Box fontSize="lg" mx={5}>
+              ·
+            </Box>
+            <Tab
+              fontSize={20}
+              _selected={selectedTabStyle}
+              _hover={hoverTabStyle}>
+              注册
+            </Tab>
           </Flex>
         </TabList>
-        <TabPanels>
-          <TabPanel>
-            <SignUp />
-          </TabPanel>
+        <TabPanels pt="20px">
           <TabPanel>
             <SignIn />
+          </TabPanel>
+          <TabPanel>
+            <SignUp />
           </TabPanel>
         </TabPanels>
       </Tabs>
