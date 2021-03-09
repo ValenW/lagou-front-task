@@ -1,11 +1,16 @@
 import { useState } from "react";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import { useFormik } from "formik";
 
 export default function Home() {
   const [visible, setVisible] = useState(false);
-  const [title, setTitle] = useState("");
-  const [link, setLink] = useState("");
   const [tiles, setTiles] = useState([
     {
       title: "百度一下，你就知道",
@@ -17,14 +22,28 @@ export default function Home() {
     setTiles([
       ...tiles,
       {
-        title,
-        link,
+        title: formik.values.title,
+        link: formik.values.link,
       },
     ]);
-    setVisible(false);
-    setTitle("");
-    setLink("");
+    handleClose();
   };
+  const handleClose = () => {
+    formik.resetForm();
+    formik.setErrors({});
+    setVisible(false);
+  };
+  const formik = useFormik({
+    initialValues: { link: "", title: "" },
+    validate: (values) => {
+      const errors = {};
+      if (!values.link) {
+        errors.link = "链接不能为空";
+      }
+      return errors;
+    },
+    onSubmit: handleSubmit,
+  });
 
   return (
     <div className={styles.container}>
@@ -72,35 +91,46 @@ export default function Home() {
         </div>
       </main>
 
-      <ReactModal
-        isOpen={visible}
-        ariaHideApp={false}
-        onRequestClose={() => setVisible(false)}
-        className={styles.modal}>
-        <p className="modal--header">添加快捷方式</p>
-        <div className="modal--body">
-          <p>
-            名称
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </p>
-          <p>
-            网址
-            <input
-              type="text"
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
-            />
-          </p>
-        </div>
-        <div className="modal--footer">
-          <button onClick={() => setVisible(false)}>取消</button>
-          <button onClick={handleSubmit}>确定</button>
-        </div>
-      </ReactModal>
+      <Dialog
+        open={visible}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">添加快捷方式</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="名称"
+            variant="outlined"
+            fullWidth
+            {...formik.getFieldProps("title")}
+          />
+          <TextField
+            margin="dense"
+            label="链接"
+            variant="outlined"
+            fullWidth
+            error={formik.touched.link && formik.errors.link}
+            helperText={formik.touched.link && formik.errors.link}
+            {...formik.getFieldProps("link")}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={handleClose}
+            style={{ marginRight: "auto" }}>
+            删除
+          </Button>
+          <Button variant="outlined" size="small" onClick={handleClose}>
+            取消
+          </Button>
+          <Button variant="outlined" size="small" onClick={formik.handleSubmit}>
+            完成
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
